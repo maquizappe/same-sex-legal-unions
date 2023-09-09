@@ -188,7 +188,8 @@
                 // Increment the currentIndex to show the next year's data
                 currentIndex++;
                 if (currentIndex >= chartData.length) {
-                    currentIndex = 0; // Wrap around to the beginning
+                   /*  currentIndex = 0; */ // Wrap around to the beginning
+                   currentIndex = chartData.length - 1;
                 }
 
                 d3.selectAll(".area, .line, .uc-line, .uc-area")
@@ -249,20 +250,16 @@
             function backChart() {
                 // Increment the currentIndex to show the next year's data
                 currentIndex--;
-                if (currentIndex >= chartData.length) {
-                    currentIndex = 0; // Wrap around to the beginning
+                if (currentIndex <0) {
+                    currentIndex =0;
                 }
 
-                d3.selectAll(".area, .line")
+                d3.selectAll(".area, .line,.uc-line, .uc-area")
                     .style("display", "block");
-                // Define the initial year and the number of years to display
-                var initialYear = parseTime("2010");
-                var yearsToDisplay = currentIndex - 1; // Increase the number of years displayed with each scroll
-
-
+         
                 // Update the data for both the area and line charts
 
-                var newData = chartData.slice(0, yearsToDisplay);
+                var newData = chartData.slice(0, currentIndex );
                 /*             x.domain([d3.min(newData, function(d) { return d.year; }),d3.max(newData, function(d) { return d.year; }) ] ); */
                 x.domain(d3.extent(data, function (d) { return d.year; }));
                 y.domain([0, d3.max(data, function (d) { return d.value; })]);
@@ -295,7 +292,7 @@
                 if (event.deltaY > 0) {
                     // Scroll down, advance one year
                     updateChart();
-                } else if (event.deltaY < 0) {
+                } else if (event.deltaY < 0 && currentIndex > 0) {
                     backChart();
                 }
             });
@@ -304,7 +301,7 @@
                 if (event.detail > 0) {
                     // Scroll down, advance one year
                     updateChart();
-                } else if (event.deltaY < 0) {
+                } else if (event.deltaY < 0 && currentIndex > 0) {
                     backChart();
                 }
 
